@@ -3,32 +3,21 @@
     <el-row :gutter="15">
       <el-col :xs="4" :sm="12" :md="12" :lg="12" :xl="12">
         <div class="left-panel">
-          <i
-            :class="collapse ? 'el-icon-s-unfold' : 'el-icon-s-fold'"
-            :title="collapse ? '展开' : '收起'"
-            class="fold-unfold"
-            @click="handleCollapse"
-          ></i>
-          <vab-breadcrumb class="hidden-xs-only" />
+          <ef-icon class="fold-unfold" :icon-class="collapse? 'menu_unfold_lf' : 'menu_unfold_rg'" :title="collapse ? '展开' : '收起'" @click="handleCollapse"/>
+          <ef-breadcrumb class="hidden-xs-only" />
         </div>
       </el-col>
       <el-col :xs="20" :sm="12" :md="12" :lg="12" :xl="12">
         <div class="right-panel">
-          <vab-error-log />
-          <vab-full-screen-bar @refresh="refreshRoute" />
-          <vab-theme-bar class="hidden-xs-only" @openSetting="openSetting" />
-          <vab-icon
+          <ef-full-screen-bar @refresh="refreshRoute" />
+          <ef-theme-bar class="hidden-xs-only" @openSetting="openSetting" />
+          <ef-icon
             title="重载所有路由"
             :pulse="pulse"
-            :icon="['fas', 'redo']"
+            icon-class="refresh"
             @click="refreshRoute"
           />
           <vab-avatar />
-          <!--  <vab-icon
-            title="退出系统"
-            :icon="['fas', 'sign-out-alt']"
-            @click="logout"
-          />-->
         </div>
       </el-col>
     </el-row>
@@ -36,42 +25,44 @@
 </template>
 
 <script>
-  import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
+import EfIcon from '@/components/EfIcon'
 
-  export default {
-    name: 'VabNavBar',
-    data() {
-      return {
-        pulse: false,
-      }
+export default {
+  name: 'EfNavBar',
+  components: { EfIcon },
+  data() {
+    return {
+      pulse: false,
+    }
+  },
+  computed: {
+    ...mapGetters({
+      collapse: 'settings/collapse',
+      visitedRoutes: 'tabsBar/visitedRoutes',
+      device: 'settings/device',
+      routes: 'routes/routes',
+    }),
+  },
+  methods: {
+    ...mapActions({
+      changeCollapse: 'settings/changeCollapse',
+    }),
+    openSetting() {
+      this.$emit('openSetting')
     },
-    computed: {
-      ...mapGetters({
-        collapse: 'settings/collapse',
-        visitedRoutes: 'tabsBar/visitedRoutes',
-        device: 'settings/device',
-        routes: 'routes/routes',
-      }),
+    handleCollapse() {
+      this.changeCollapse()
     },
-    methods: {
-      ...mapActions({
-        changeCollapse: 'settings/changeCollapse',
-      }),
-      openSetting() {
-        this.$emit('openSetting')
-      },
-      handleCollapse() {
-        this.changeCollapse()
-      },
-      async refreshRoute() {
-        this.$baseEventBus.$emit('reload-router-view')
-        this.pulse = true
-        setTimeout(() => {
-          this.pulse = false
-        }, 1000)
-      },
+    async refreshRoute() {
+      this.$baseEventBus.$emit('reload-router-view')
+      this.pulse = true
+      setTimeout(() => {
+        this.pulse = false
+      }, 1000)
     },
-  }
+  },
+}
 </script>
 
 <style lang="scss" scoped>

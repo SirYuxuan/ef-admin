@@ -1,16 +1,15 @@
+@charset "utf-8";
 /**
  * @author
  * @description 全局加载动画
  */
-
-@charset "utf-8";
 
 @import "./spinner/dots.css";
 @import "./spinner/gauge.css";
 @import "./spinner/inner-circles.css";
 @import "./spinner/plus.css";
 
-$base-loading: ".vab-loading-type";
+$base-loading: ".ef-loading-type";
 
 /* 自定义loading开始 */
 #{$base-loading}1 {

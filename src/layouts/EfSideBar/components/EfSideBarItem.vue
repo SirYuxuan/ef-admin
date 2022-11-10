@@ -7,7 +7,7 @@
     :route-children="routeChildren"
   >
     <template v-if="item.children && item.children.length">
-      <vab-side-bar-item
+      <ef-side-bar-item
         v-for="(route,index) in item.children"
         :key="index + route.path"
         :full-path="handlePath(route.path)"
@@ -15,87 +15,83 @@
       />
     </template>
   </component>
+  
 </template>
 
 <script>
-  import { isExternal } from '@/utils/validate'
-  import path from 'path'
+import { isExternal } from '@/utils/validate'
+import path from 'path'
 
-  export default {
-    name: 'VabSideBarItem',
-    props: {
-      item: {
-        type: Object,
-        required: true,
-      },
-      fullPath: {
-        type: String,
-        default: '',
-      },
+export default {
+  name: 'EfSideBarItem',
+  props: {
+    item: {
+      type: Object,
+      required: true,
     },
-    data() {
-      this.onlyOneChild = null
-      return {}
+    fullPath: {
+      type: String,
+      default: '',
     },
-    computed: {
-      menuComponent() {
-        if (
-          this.handleChildren(this.item.children, this.item) &&
-          (!this.routeChildren.children ||
-            this.routeChildren.notShowChildren) &&
-          !this.item.alwaysShow
-        ) {
-          return 'VabMenuItem'
+  },
+  data() {
+    return {}
+  },
+  computed: {
+    menuComponent() {
+      if (this.handleChildren(this.item.children, this.item) &&  (!this.routeChildren.children || this.routeChildren.notShowChildren) && !this.item.alwaysShow) {
+        return 'EfMenuItem'
+      } else {
+        return 'EfSubmenu'
+      }
+    },
+  },
+  methods: {
+    handleChildren(children = [], parent) {
+      if (children === null) {
+        children = []
+      }
+      const showChildren = children.filter((item) => {
+        if (item.hidden) {
+          return false
         } else {
-          return 'VabSubmenu'
-        }
-      },
-    },
-    methods: {
-      handleChildren(children = [], parent) {
-        if (children === null) children = []
-        const showChildren = children.filter((item) => {
-          if (item.hidden) {
-            return false
-          } else {
-            this.routeChildren = item
-            return true
-          }
-        })
-        if (showChildren.length === 1) {
+          this.routeChildren = item
           return true
         }
+      })
+      if (showChildren.length === 1) {
+        return true
+      }
 
-        if (showChildren.length === 0) {
-          this.routeChildren = {
-            ...parent,
-            path: '',
-            notShowChildren: true,
-          }
-          return true
+      if (showChildren.length === 0) {
+        this.routeChildren = {
+          ...parent,
+          path: '',
+          notShowChildren: true,
         }
-        return false
-      },
-      handlePath(routePath) {
-        if (isExternal(routePath)) {
-          return routePath
-        }
-        if (isExternal(this.fullPath)) {
-          return this.fullPath
-        }
-        return path.resolve(this.fullPath, routePath)
-      },
+        return true
+      }
+      return false
     },
-  }
+    handlePath(routePath) {
+      if (isExternal(routePath)) {
+        return routePath
+      }
+      if (isExternal(this.fullPath)) {
+        return this.fullPath
+      }
+      return path.resolve(this.fullPath, routePath)
+    },
+  },
+}
 </script>
 
 <style lang="scss" scoped>
-  .vab-nav-icon {
+  .ef-nav-icon {
     margin-right: 4px;
   }
 
-  ::v-deep {
-    .el-tag {
+  :deep(.el-tag) {
       float: right;
       height: 16px;
       padding-right: 4px;
@@ -103,6 +99,5 @@
       margin-top: calc((#{$base-menu-item-height} - 16px) / 2);
       line-height: 16px;
       border: 0;
-    }
   }
 </style>

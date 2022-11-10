@@ -1,7 +1,8 @@
-export const constantRoutes = [
+export const constantRouters = [
   {
-    path: '/login',
+    path: '/demo',
     component: () => import('@/layouts'),
     hidden: true,
+    meta: { title: 'demo' },
   }
 ]

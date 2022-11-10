@@ -7,26 +7,26 @@
 </template>
 
 <script>
-  export default {
-    name: 'VabBreadcrumb',
-    data() {
-      return {
-        list: this.getBreadcrumb(),
-      }
+export default {
+  name: 'EfBreadcrumb',
+  data() {
+    return {
+      list: this.getBreadcrumb(),
+    }
+  },
+  watch: {
+    $route() {
+      this.list = this.getBreadcrumb()
     },
-    watch: {
-      $route() {
-        this.list = this.getBreadcrumb()
-      },
+  },
+  methods: {
+    getBreadcrumb() {
+      return this.$route.matched.filter(
+        (item) => item.meta.title
+      )
     },
-    methods: {
-      getBreadcrumb() {
-        return this.$route.matched.filter(
-          (item) => item.meta.title
-        )
-      },
-    },
-  }
+  },
+}
 </script>
 
 <style lang="scss" scoped>

@@ -1,36 +1,36 @@
 <template>
   <span v-if="themeBar">
-    <vab-icon
+    <ef-icon
       title="主题配置"
-      :icon="['fas', 'palette']"
+      icon-class="theme"
       @click="openSetting"
     />
   </span>
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 
-  export default {
-    name: 'VabThemeBar',
-    data() {
-      return {}
+export default {
+  name: 'EfThemeBar',
+  data() {
+    return {}
+  },
+  computed: {
+    ...mapGetters({
+      themeBar: 'settings/themeBar',
+    }),
+    classObj() {
+      return {
+        mobile: this.device === 'mobile',
+      }
     },
-    computed: {
-      ...mapGetters({
-        themeBar: 'settings/themeBar',
-      }),
-      classObj() {
-        return {
-          mobile: this.device === 'mobile',
-        }
-      },
+  },
+  created() {},
+  methods: {
+    openSetting() {
+      this.$emit('openSetting')
     },
-    created() {},
-    methods: {
-      openSetting() {
-        this.$emit('openSetting')
-      },
-    },
-  }
+  },
+}
 </script>
