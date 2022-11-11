@@ -142,7 +142,7 @@ html {
 
     /* 大图展示结束 */
 
-    .vue-admin-beautiful-wrapper {
+    .ef-admin-wrapper {
       .app-main-container {
         @include base-scrollbar;
 
@@ -233,11 +233,22 @@ html {
       box-sizing: border-box;
       vertical-align: middle;
     }
-    .el-menu--popup-container{
-      z-index: 2028;
-      left: 64px;
-      position: fixed;
+    .el-menu--collapse{
+      .el-menu--popup-container{
+        z-index: 2028;
+        left: 64px;
+        position: fixed;
+      }
+      .el-popper.is-pure{
+        border: 0;
+      }
+      .el-sub-menu {
+        .el-menu-item{
+          padding:0 var(--el-menu-base-level-padding);
+        }
+      }
     }
+
     .el-sub-menu {
       .el-menu-item{
         padding: 0 45px;
@@ -299,7 +310,59 @@ html {
         }
       }
     }
-
     /* 下拉树样式-----------结束 */
+
+    .el-dropdown-menu__item .svg-icon{
+      margin-right: 5px;
+    }
+
+    /* Layout */
+    .ef-layout-header,.ef-layout-header *{
+      transition: all .3s cubic-bezier(.645,.045,.355,1),border 0s,color .1s,font-size 0s;
+    }
+    .el-popper__arrow{
+      transition: none;
+    }
+    .el-popper{
+      transition: none;
+    }
+    .ef-drawer{
+
+      .el-drawer__body{
+        padding-right: 0;
+        .el-scrollbar__wrap{
+          padding-right: 20px;
+          .el-form-item__content{
+            flex: 0 0 auto;
+          }
+          .el-form-item__label{
+            flex: 1 1;
+            .svg-icon{
+              height: 24px;
+              color: var(--el-text-color-regular);
+            }
+          }
+          .el-form-item{
+            display: flex;
+            align-items: center;
+            .el-radio-button.none{
+              font-family: remixicon,sans-serif!important;
+              font-size: 16px;
+              font-weight: 580;
+              line-height: 80px;
+              text-align: center;
+              background: #f7f7f7 none;
+              background-size: cover;
+              :before{
+                content: "\eace";
+              }
+            }
+          }
+        }
+      }
+      .el-drawer__header{
+        margin-bottom: 0;
+      }
+    }
   }
 }

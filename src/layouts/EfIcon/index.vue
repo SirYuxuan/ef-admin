@@ -61,6 +61,13 @@ export default {
       opacity: 0.8;
     }
   }
+  .el-menu{
+    .svg-icon {
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
 
   .svg-external-icon {
     display: inline-block;

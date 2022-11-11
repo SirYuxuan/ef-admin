@@ -2,7 +2,7 @@
   <span v-if="themeBar">
     <ef-icon
       title="主题配置"
-      iconClass="setting"
+      icon-class="theme"
       @click="openSetting"
     />
   </span>
@@ -12,7 +12,7 @@
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'VabThemeBar',
+  name: 'EfThemeBar',
   data() {
     return {}
   },

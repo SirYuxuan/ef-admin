@@ -27,6 +27,7 @@ export default function (app) {
     const componentName = componentConfig.default.name
     app.component(componentName, componentConfig.default || componentConfig)
   })
+  // 导入所有主题
 
   // 第三方组件
   app.use(ElementPlus, { size: 'small' })

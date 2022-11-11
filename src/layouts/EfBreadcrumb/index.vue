@@ -34,27 +34,23 @@ export default {
     height: $base-nav-bar-height;
     font-size: $base-font-size-default;
     line-height: $base-nav-bar-height;
-
-    ::v-deep {
-      .el-breadcrumb__item {
-        .el-breadcrumb__inner {
-          a {
-            display: flex;
-            float: left;
-            font-weight: normal;
-            color: #515a6e;
-
-            i {
-              margin-right: 3px;
-            }
+    :deep(.el-breadcrumb__item){
+      .el-breadcrumb__inner {
+        a {
+          display: flex;
+          float: left;
+          font-weight: normal;
+          color: #515a6e;
+          i {
+            margin-right: 3px;
           }
         }
+      }
 
-        &:last-child {
-          .el-breadcrumb__inner {
-            a {
-              color: #999;
-            }
+      &:last-child {
+        .el-breadcrumb__inner {
+          a {
+            color: #999;
           }
         }
       }

@@ -1,7 +1,7 @@
 <template>
   <div class="ef-admin-wrapper" :class="classObj">
     <div v-if="'horizontal' === layout" class="layout-container-horizontal"  :class="{  fixed: header === 'fixed', 'no-tabs-bar': tabsBar === 'false' || tabsBar === false, }" >
-      <div :class="header === 'fixed' ? 'fixed-header' : ''">
+      <div :class="header === 'ef-layout-header fixed' ? 'fixed-header' : 'ef-layout-header'">
         <ef-top-bar @openSetting="openThemeSetting" />
         <div
             v-if="tabsBar === 'true' || tabsBar === true"
@@ -13,7 +13,7 @@
         </div>
       </div>
       <div class="ef-main main-padding">
-        <vab-ad />
+        <ef-ad />
         <ef-app-main />
       </div>
     </div>
@@ -21,52 +21,61 @@
       <div v-if="device === 'mobile' && collapse === false"  class="mask"  @click="handleFoldSideBar" />
       <ef-side-bar />
       <div class="ef-main" :class="collapse ? 'is-collapse-main' : ''">
-        <div :class="header === 'fixed' ? 'fixed-header' : ''">
+        <div :class="header === 'fixed' ? 'ef-layout-header fixed-header' : 'ef-layout-header'">
           <ef-nav-bar @openSetting="openThemeSetting" />
           <ef-tabs-bar v-if="tabsBar === 'true' || tabsBar === true" />
         </div>
-        <vab-ad />
+        <ef-ad />
         <ef-app-main />
       </div>
     </div>
     <el-backtop />
     <el-drawer
+        custom-class="ef-drawer"
         title="主题配置"
-        :visible.sync="drawerVisible"
+        v-model="drawerVisible"
         direction="rtl"
         append-to-body
         size="270px"
     >
       <el-scrollbar style="overflow: hidden">
-        <div class="el-drawer__body" style="padding: 0 20px 20px 20px">
-          <el-form ref="form" :model="theme" label-position="left">
-            <el-divider content-position="left">
-              <i class="el-icon-setting"></i>
-              常用设置
-            </el-divider>
+        <el-form ref="form" :model="theme" label-position="left">
             <el-form-item>
-              <span style="display: inline-block; float: left">
-                布局
+              <template #label>
+                <span>布局</span>
                 <el-tooltip
                     content="布局仅在PC版生效，手机版将固定为纵向布局"
                     class="item"
                     effect="dark"
                     placement="top-start"
                 >
-                  <i class="el-icon-info"></i>
+                  <ef-icon icon-class="problem" />
                 </el-tooltip>
-              </span>
+              </template>
 
               <el-select
                   v-model="theme.layout"
-                  style="width: 115px"
-                  size="mini"
+                  style="width: 159px"
+                  size="small"
                   placeholder="布局"
               >
                 <el-option label="纵向" value="vertical"></el-option>
                 <el-option label="横向" value="horizontal"></el-option>
               </el-select>
             </el-form-item>
+            <el-form-item label="主题">
+              <el-select
+                  v-model="theme.name"
+                  style="width: 159px"
+                  size="small"
+                  @change="changeTheme"
+                  placeholder="布局"
+              >
+                <el-option label="黑蓝" value="default"></el-option>
+                <el-option label="紫白" value="purple_white.module"></el-option>
+              </el-select>
+            </el-form-item>
+
             <el-form-item label="固定头部">
               <el-switch
                   v-model="theme.header"
@@ -75,7 +84,7 @@
                   inactive-value="noFixed"
               ></el-switch>
             </el-form-item>
-            <el-form-item label="多标签">
+            <el-form-item label="标签">
               <el-switch
                   v-model="theme.tabsBar"
                   style="display: inline-block; float: right"
@@ -84,19 +93,16 @@
               ></el-switch>
             </el-form-item>
           </el-form>
-        </div>
       </el-scrollbar>
     </el-drawer>
   </div>
 </template>
 
 <script>
-import { ElBacktop, ElScrollbar, ElDrawer } from 'element-plus'
 import { mapActions, mapGetters } from 'vuex'
 import { tokenName } from '@/config'
 export default {
   name: 'index',
-  components: { ElBacktop, ElScrollbar, ElDrawer },
   computed: {
     ...mapGetters({
       layout: 'settings/layout',
@@ -114,7 +120,14 @@ export default {
   data() {
     return {
       oldLayout: '',
-      drawerVisible: false
+      drawerVisible: false,
+      theme: {
+        name: 'default',
+        layout: 'vertical',
+        header: 'fixed',
+        tabsBar: 'true',
+        background: ''
+      },
     }
   },
   beforeMount() {
@@ -132,6 +145,7 @@ export default {
     },
   },
   mounted() {
+    console.log('index', this.tabsBar)
     this.oldLayout = this.layout
     const isMobile = this.handleIsMobile()
     if (isMobile) {
@@ -162,9 +176,16 @@ export default {
       changeHeader: 'settings/changeHeader',
       changeTabsBar: 'settings/changeTabsBar',
     }),
+    changeTheme(){
+      let themeVars = require(`@/assets/style/theme/${this.theme.name}.scss`)
+      for (let key in themeVars) {
+        document.documentElement.style.setProperty(key, themeVars[key])
+      }
+    },
     openThemeSetting() {
       this.drawerVisible = true
       const theme = localStorage.getItem('ef-admin-theme')
+      console.log('theme1', theme)
       if (null !== theme) {
         this.theme = JSON.parse(theme)
         this.handleSetTheme()
@@ -182,7 +203,7 @@ export default {
             "name":"${name}",
             "layout":"${layout}",
             "header":"${header}",
-            "tabsBar":"${tabsBar}"
+            "tabsBar":"${this.theme.tabsBar}"
           }`
       )
       if (!this.handleIsMobile()) this.changeLayout(layout)
@@ -239,34 +260,29 @@ export default {
     &.fixed.no-tabs-bar {
       padding-top: $base-top-bar-height;
     }
-
-    ::v-deep {
-      .ef-main {
-        width: 88%;
-        margin: auto;
-      }
-
-      .fixed-header {
-        @include fix-header;
-      }
-
-      .tag-view-show {
-        background: $base-color-white;
-        box-shadow: $base-box-shadow;
-      }
-
-      .nav-bar-container {
+    :deep(.ef-main){
+      width: 88%;
+      margin: auto;
+    }
+    :deep(.fixed-header){
+      @include fix-header;
+    }
+    :deep(.tag-view-show){
+      background: $base-color-white;
+      box-shadow: $base-box-shadow;
+    }
+    :deep(.ef-nav){
+      .ef-nav {
         .fold-unfold {
           display: none;
         }
       }
-
-      .main-padding {
-        .app-main-container {
-          margin-top: $base-padding;
-          margin-bottom: $base-padding;
-          background: $base-color-white;
-        }
+    }
+    :deep(.main-padding){
+      .app-main-container {
+        margin-top: $base-padding;
+        margin-bottom: $base-padding;
+        background: $base-color-white;
       }
     }
   }
@@ -302,42 +318,31 @@ export default {
       margin-left: $base-left-menu-width;
       background: #f6f8f9;
       transition: $base-transition;
-
-      ::v-deep {
-        .fixed-header {
-          @include fix-header;
-
-          left: $base-left-menu-width;
-          width: $base-right-content-width;
-          box-shadow: $base-box-shadow;
-          transition: $base-transition;
-        }
-
-        .nav-bar-container {
-          position: relative;
-          box-sizing: border-box;
-        }
-
-        .tabs-bar-container {
-          box-sizing: border-box;
-        }
-
-        .app-main-container {
-          width: calc(100% - #{$base-padding} - #{$base-padding});
-          margin: $base-padding auto;
-          background: $base-color-white;
-          border-radius: $base-border-radius;
-        }
+      :deep(.fixed-header){
+        @include fix-header;
+        left: $base-left-menu-width;
+        width: $base-right-content-width;
+        box-shadow: $base-box-shadow;
+        transition: $base-transition;
       }
-
+      :deep(.ef-nav){
+        position: relative;
+        box-sizing: border-box;
+      }
+      :deep(.ef-tabs){
+        box-sizing: border-box;
+      }
+      :deep(.app-main-container){
+        width: calc(100% - #{$base-padding} - #{$base-padding});
+        margin: $base-padding auto;
+        background: $base-color-white;
+        border-radius: $base-border-radius;
+      }
       &.is-collapse-main {
         margin-left: $base-left-menu-width-min;
-
-        ::v-deep {
-          .fixed-header {
-            left: $base-left-menu-width-min;
-            width: calc(100% - 65px);
-          }
+        :deep(.fixed-header){
+          left: $base-left-menu-width-min;
+          width: calc(100% - 65px);
         }
       }
     }
@@ -345,29 +350,21 @@ export default {
 
   /* 手机端开始 */
   &.mobile {
-    ::v-deep {
-      .el-pager,
-      .el-pagination__jump {
-        display: none;
+    :deep(.el-pager,.el-pagination__jump){
+      display: none;
+    }
+    :deep(.layout-container-vertical){
+      .el-scrollbar.side-bar-container.is-collapse {
+        width: 0;
       }
-
-      .layout-container-vertical {
-        .el-scrollbar.side-bar-container.is-collapse {
-          width: 0;
-        }
-
-        .ef-main {
-          width: 100%;
-          margin-left: 0;
-        }
-      }
-
       .ef-main {
-        .fixed-header {
-          left: 0 !important;
-          width: 100% !important;
-        }
+        width: 100%;
+        margin-left: 0;
       }
+    }
+    :deep(.fixed-header){
+      left: 0 !important;
+      width: 100% !important;
     }
   }
 

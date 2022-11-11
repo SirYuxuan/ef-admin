@@ -50,6 +50,7 @@ export default {
       commit('changeHeader', header)
     },
     changeTabsBar({ commit }, tabsBar) {
+      console.log('update tabsBar', tabsBar)
       commit('changeTabsBar', tabsBar)
     },
     changeCollapse({ commit }) {

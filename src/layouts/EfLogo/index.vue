@@ -45,6 +45,12 @@ export default {
   margin-left: -20px;
   vertical-align: middle;
 }
+.is-collapse{
+  .logoImg {
+    margin-left: -5px;
+  }
+}
+
 @mixin container {
   position: relative;
   height: $base-top-bar-height;

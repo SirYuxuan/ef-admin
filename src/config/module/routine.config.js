@@ -4,6 +4,14 @@
  * @since 2020-11-19
  */
 const routine = {
+  //缓存路由的最大数量
+  keepAliveMaxNum: 99,
+  // 是否显示版权信息
+  footerCopyright: true,
+  // 版权名称
+  copyright: 'Sir丶雨轩',
+  // 是否展示广告
+  showAd: true,
   // 登录页路径
   loginPath: '/login',
   // 可以不需要权限访问的白名单列表
